@@ -4,7 +4,13 @@
     <bookmark url="file://$PROJECT_DIR$/src/main/java/com/d2s2/dataScience/CSVReader.java" line="159" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="28411f44-8345-4bae-b7cb-54ca0088bbf5" name="Default" comment="" />
+    <list default="true" id="28411f44-8345-4bae-b7cb-54ca0088bbf5" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/com/d2s2/dataScience/App.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/com/d2s2/dataScience/CSVReader.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/test-classes/com/d2s2/dataScience/AppTest.class" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -576,12 +582,12 @@
       <workItem from="1492588762425" duration="2828000" />
       <workItem from="1492755717845" duration="4040000" />
       <workItem from="1492769316893" duration="3325000" />
-      <workItem from="1492775690436" duration="339000" />
+      <workItem from="1492775690436" duration="385000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="19505000" />
+    <option name="totallyTimeSpent" value="19551000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="0" width="1370" height="728" extended-state="0" />
