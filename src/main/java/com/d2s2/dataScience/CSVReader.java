@@ -10,14 +10,17 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class CSVReader {
     private ArrayList<String[]> csvContent ;
     private  static int columnCount;
     private ArrayList<Integer> hasNullValueColumns = new ArrayList<Integer>();
     private ArrayList<Integer> avarageReplacableColumns = new ArrayList<Integer>();
+    private ArrayList<Integer> nonNumericalColumns = new ArrayList<Integer>();
     private String csvFile;
     private boolean valid = false;
+    private Scanner sc;
 
 
     public CSVReader(String inputFileName){
@@ -32,11 +35,43 @@ public class CSVReader {
             System.out.println("File cannot be read");
 
         }
+        sc = new Scanner(System.in);
     }
 
     public void processFile(){
         if(valid){
             printNullValuedColumns();
+            System.out.println("List of columns with null values");
+            System.out.println(hasNullValueColumns);
+            for(int index =0;index< hasNullValueColumns.size();index++){
+                boolean canReplaceWithAvarage = isNumerical(hasNullValueColumns.get(index));
+                if(canReplaceWithAvarage){
+                    avarageReplacableColumns.add(hasNullValueColumns.get(index));
+
+                }
+                else{
+                    nonNumericalColumns.add(hasNullValueColumns.get(index));
+
+                }
+            }
+            System.out.println("List of columns with null values and only numeric values");
+            System.out.println(avarageReplacableColumns+"\n\n");
+
+            System.out.println("List of columns with null values and non numeric values");
+            System.out.println(nonNumericalColumns+"\n\n");
+
+
+
+            for(int index =0;index< avarageReplacableColumns.size();index++){
+                int column = avarageReplacableColumns.get(index);
+                System.out.println("Do you want to replace null values of column :"+ column+ " with avarage of available values ? (y/n)");
+                String answer = sc.nextLine();
+                answer = answer.toLowerCase();
+                if(answer.equals("y")){
+                    replaceWithAvarage(column);
+                }
+
+            }
         }
 
     }
@@ -97,9 +132,10 @@ public class CSVReader {
 
 
 
-                System.out.println("Column "+index+" have empty values "+hasNullValues);
+
                 if(hasNullValues){
                     hasNullValueColumns.add(index);
+                    System.out.println("Column "+index+" have empty values ");
 
                 }
 
@@ -111,20 +147,7 @@ public class CSVReader {
 
 
         }
-        System.out.println(hasNullValueColumns);
-        for(int index =0;index< hasNullValueColumns.size();index++){
-            boolean canReplaceWithAvarage = isNumerical(hasNullValueColumns.get(index));
-            if(canReplaceWithAvarage){
-                avarageReplacableColumns.add(hasNullValueColumns.get(index));
-                System.out.println("Column "+ hasNullValueColumns.get(index)+" only have numeric values "+ isNumerical(hasNullValueColumns.get(index)));
 
-            }
-        }
-        System.out.println(avarageReplacableColumns);
-
-        for(int index =0;index< avarageReplacableColumns.size();index++){
-            replaceWithAvarage(avarageReplacableColumns.get(index));
-        }
 
     }
 
@@ -173,7 +196,7 @@ public class CSVReader {
             }
         }
         catch (ArrayIndexOutOfBoundsException e){
-            System.out.println("Problem finding values for column no :"+columnNo+" in index of "+index);
+
 
             return true;
 
@@ -194,7 +217,6 @@ public class CSVReader {
             catch (NumberFormatException e){
 
                 if(!value.equals("")){
-                    System.out.println(columnNo+" not numeric because of "+value+ " in index "+index);
                     return false;
                 }
 
