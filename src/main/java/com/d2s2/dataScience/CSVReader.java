@@ -16,13 +16,37 @@ public class CSVReader {
     private  static int columnCount;
     private ArrayList<Integer> hasNullValueColumns = new ArrayList<Integer>();
     private ArrayList<Integer> avarageReplacableColumns = new ArrayList<Integer>();
+    private String csvFile;
+    private boolean valid = false;
 
 
-    public void read() {
+    public CSVReader(String inputFileName){
+        csvFile = inputFileName+".csv";
+        valid =read();
+        if(valid){
+            columnCount = getColumnCount();
+            System.out.println("Reading the file "+inputFileName+".csv "+ "successful" );
+            System.out.println("Column Count : "+columnCount);
+        }
+        else{
+            System.out.println("File cannot be read");
 
-        String csvFile = "test.csv";
+        }
+    }
+
+    public void processFile(){
+        if(valid){
+            printNullValuedColumns();
+        }
+
+    }
+
+
+    public boolean read(){
+
+
         BufferedReader br = null;
-        String line = "";
+        String line;
         String cvsSplitBy = ",";
         columnCount =0;
 
@@ -36,26 +60,34 @@ public class CSVReader {
 
                 // use comma as separator
 
-                String[] country = line.split(cvsSplitBy);
-                updateColumnCount(country.length);
-                csvContent.add(country);
+                String[] Stringline = line.split(cvsSplitBy);
+                updateColumnCount(Stringline.length);
+                csvContent.add(Stringline);
 
 
             }
 
+
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("File Not Found");
+            return false;
+
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
+
         } finally {
             if (br != null) {
                 try {
                     br.close();
+                    return true;
                 } catch (IOException e) {
                     e.printStackTrace();
+                    return false;
                 }
             }
         }
+        return false;
 
     }
 
