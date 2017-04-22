@@ -25,16 +25,15 @@ public class CSVReader {
 
     public CSVReader(String inputFileName){
         csvFile = inputFileName+".csv";
-        valid =read();
-        if(valid){
-            columnCount = getColumnCount();
-            System.out.println("Reading the file "+inputFileName+".csv "+ "successful" );
-            System.out.println("Column Count : "+columnCount);
-        }
-        else{
-            System.out.println("File cannot be read");
+        columnCount = getMaxColumnCount();
 
-        }
+        valid =read();
+        System.out.println("columnCountt " +columnCount);
+        System.out.println("Reading the file "+inputFileName+".csv "+ "successful" );
+        System.out.println("Column Count : "+columnCount);
+
+
+
         sc = new Scanner(System.in);
     }
 
@@ -68,7 +67,17 @@ public class CSVReader {
                 String answer = sc.nextLine();
                 answer = answer.toLowerCase();
                 if(answer.equals("y")){
-                    replaceWithAvarage(column);
+                    replaceWithAverage(column);
+                }
+
+            }
+            for(int index =0;index< nonNumericalColumns.size();index++){
+                int column = nonNumericalColumns.get(index);
+                System.out.println("Do you want to replace null values of column :"+ column+ " with most frequent of available values ? (y/n)");
+                String answer = sc.nextLine();
+                answer = answer.toLowerCase();
+                if(answer.equals("y")){
+                    replaceWithFrequent(column);
                 }
 
             }
@@ -76,15 +85,31 @@ public class CSVReader {
 
     }
 
+    public String[] replaceArray(String[] values){
+        String[] valueArray = new String[columnCount];
+
+        for(int index =0 ; index < columnCount ; index ++ ){
+
+            if(index<values.length){
+                valueArray[index] = values[index];
+
+            }
+            else {
+                valueArray[index] = "";
+            }
+
+
+        }
+
+        return valueArray;
+    }
+
 
     public boolean read(){
-
 
         BufferedReader br = null;
         String line;
         String cvsSplitBy = ",";
-        columnCount =0;
-
 
 
         try {
@@ -95,8 +120,7 @@ public class CSVReader {
 
                 // use comma as separator
 
-                String[] Stringline = line.split(cvsSplitBy);
-                updateColumnCount(Stringline.length);
+                String[] Stringline = replaceArray(line.split(cvsSplitBy));
                 csvContent.add(Stringline);
 
 
@@ -151,15 +175,10 @@ public class CSVReader {
 
     }
 
-    private static void updateColumnCount(int value){
-        if(value>columnCount) {
-            columnCount = value;
-        }
-
-    }
 
 
-    private void replaceWithAvarage(int column){
+
+    private void replaceWithAverage(int column){
         String SValue;
         double valueSum = 0;
         ArrayList<Integer> nullIndexes = new ArrayList<Integer>();
@@ -176,12 +195,15 @@ public class CSVReader {
 
         }
         double average = valueSum/(csvContent.size()-1-nullIndexes.size());
-        System.out.println(column+" Avarage is "+average);
+        System.out.println( column+" Average is "+ average );
+        String av = String.format("%.2f", average);
+
+        for(int index:nullIndexes){
+            csvContent.get(index)[column] = String.valueOf(av);
+        }
     }
 
-    public int getColumnCount(){
-        return columnCount;
-    }
+
 
     private boolean hasNullValues(int columnNo){
         int index =0;
@@ -210,15 +232,21 @@ public class CSVReader {
 
     private boolean isNumerical(int columnNo){
         for(int index=1; index < csvContent.size();index++){
-            String value = csvContent.get(index)[columnNo];
+            String value = null;
              try {
-                Double.parseDouble(value);
+                 value = csvContent.get(index)[columnNo];
+                 Double.parseDouble(value);
             }
             catch (NumberFormatException e){
 
                 if(!value.equals("")){
                     return false;
                 }
+
+            }
+            catch (ArrayIndexOutOfBoundsException e){
+                System.out.println("Here "+ index);
+                e.printStackTrace();
 
             }
         }
@@ -272,6 +300,14 @@ public class CSVReader {
         System.out.println(mostFrequent);
         System.out.println(mFrequentValue);
 
+
+        for(int index =0 ; index < csvContent.size() ; index ++){
+            String value = csvContent.get(index)[columnNo];
+            if(value.equals("")){
+                csvContent.get(index)[columnNo] = mostFrequent;
+            }
+        }
+
         double percentage = mFrequentValue*100/valueSum;
         DecimalFormat numberFormat = new DecimalFormat("#.00");
 
@@ -300,6 +336,58 @@ public class CSVReader {
         pw.write(sb.toString());
         pw.close();
         System.out.println("done!");
+    }
+
+    private int getMaxColumnCount(){
+        BufferedReader br = null;
+        String line;
+        String cvsSplitBy = ",";
+        columnCount =0;
+        int maxLength =0;
+
+
+
+
+        try {
+            br = new BufferedReader(new FileReader(csvFile));
+            while ((line = br.readLine()) != null) {
+
+                // use comma as separator
+
+                int length = line.split(cvsSplitBy).length;
+                if(length>maxLength){
+
+                    maxLength = length;
+                }
+
+
+
+
+            }
+
+
+        } catch (FileNotFoundException e) {
+            System.out.println("File Not Found");
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+
+
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+
+                }
+            }
+        }
+
+        return maxLength;
+
     }
 
 

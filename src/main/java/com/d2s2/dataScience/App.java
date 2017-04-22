@@ -23,6 +23,8 @@ public class App
 
         csvReader.processFile();
 
+        csvReader.writeToCSV();
+
         /*
         System.out.println(csvReader.getColumnCount());
         csvReader.printNullValuedColumns();
